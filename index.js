@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(express.json())
 // connect to database
 mongoose.connect(process.env.DATABASE_URL);
 let db = mongoose.connection;
@@ -17,6 +18,8 @@ app.get('/', (req,res)=>{
     res.send('AgroMinds');
 });
 
+require("./routes/predicterRoutes")(app)
+require("./routes/authRoutes")(app)
 app.listen(port,()=>{
     console.log(`Server is running on port ${port}`);
 });

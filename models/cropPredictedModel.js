@@ -22,6 +22,6 @@ const cropPredictionSchema = new Schema({
     predictedcropID: { type: Number, ref: 'Crop', required: true }
 });
 
-const CropPrediction = mongoose.model('CropPrediction',userSchema);
+const CropPrediction = mongoose.model('CropPrediction',cropPredictionSchema);
 
 module.exports = CropPrediction;

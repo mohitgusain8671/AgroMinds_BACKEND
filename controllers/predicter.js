@@ -1,5 +1,6 @@
 const axios = require('axios');
-
+const Fertilizer = require("../models/fertilizerModel")
+const Crop = require("../models/cropModel")
 // Replace these URLs with the actual URLs of your FastAPI microservice
 const FASTAPI_BASE_URL = 'http://localhost:8000';  // Adjust this to the correct address if necessary
 const OPEN_METEO_URL = 'https://archive-api.open-meteo.com/v1/archive';
@@ -71,7 +72,20 @@ exports.fertilizerPrediction = async (req, res) => {
             headers: { 'Content-Type': 'application/json' }
         });
 
-        res.json({ prediction: response.data.predictions });
+        const predictionId = response.data.predictions[0]; // Extract prediction ID (e.g., 3)
+
+        // Search for the fertilizer in the database by the fertilizerID attribute
+        const fertilizer = await Fertilizer.findOne({ fertilizerID: predictionId });
+
+        if (!fertilizer) {
+            return res.status(404).json({ message: 'Fertilizer not found' });
+        }
+
+        // Return the fertilizer details along with the prediction result
+        res.json({
+            prediction: predictionId,
+            fertilizerDetails: fertilizer
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -95,13 +109,24 @@ exports.cropPrediction = async (req, res) => {
             "PH": req.body.PH,
             "Rainfall": weatherData.rainfall
         };
-
         // Call FastAPI's /predict-crop endpoint
         const response = await axios.post(`${FASTAPI_BASE_URL}/predict-crop`, inputData, {
             headers: { 'Content-Type': 'application/json' }
         });
+        const predictionId = response.data.predictions[0]; // Extract prediction ID (e.g., 3)
 
-        res.json({ prediction: response.data.predictions });
+        // Search for the Crop in the database by the CropID attribute
+        const crop = await Crop.findOne({ cropID: predictionId });
+
+        if (!crop) {
+            return res.status(404).json({ message: 'Crop not found' });
+        }
+
+        // Return the Crop details along with the prediction result
+        res.json({
+            prediction: predictionId,
+            croprDetails: crop
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });

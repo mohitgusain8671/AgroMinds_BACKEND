@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 // Crop Model
 const cropSchema = new Schema({
-    _id: { type: Number, required: true },
+    cropID: { type: Number, required: true },
     name: { type: String, required: true },
     image: { type: String },
     optimal_ph_min: { type: Number, required: true },
@@ -14,6 +14,6 @@ const cropSchema = new Schema({
     optimal_moisture_max: { type: Number, required: true }
 });
   
-const Crop = mongoose.model('Crop',userSchema);
+const Crop = mongoose.model('Crop',cropSchema);
 
 module.exports = Crop;

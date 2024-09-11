@@ -23,6 +23,6 @@ const fertilizerRecommendationSchema = new Schema({
     Quantity: { type: Number, required: true }
 });
 
-const FertilizerPrediction = mongoose.model('FertilizerPrediction',userSchema);
+const FertilizerPrediction = mongoose.model('FertilizerPrediction',fertilizerRecommendationSchema);
 
 module.exports = FertilizerPrediction;

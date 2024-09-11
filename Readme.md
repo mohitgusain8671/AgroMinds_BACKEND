@@ -74,9 +74,26 @@ Predicts the optimal fertilizer requirements based on weather and soil data.
 
 ```json
 {
-    "prediction": [
-        3
-    ]
+    "prediction": 3,
+    "fertilizerDetails": {
+        "_id": "66e13ae151591db321057ffe",
+        "fertilizerID": 3,
+        "name": "20-20",
+        "description": [
+            "High nitrogen and potassium content for vigorous growth.",
+            "Promotes leafy growth and strong stems.",
+            "Suitable for leafy vegetables and grasses."
+        ],
+        "organic_methods": [
+            "Use compost for a high nitrogen boost.",
+            "Apply kelp extract for additional potassium and trace minerals.",
+            "Incorporate green manure crops to improve soil structure and fertility."
+        ],
+        "N2_content": 20,
+        "Phosphorus_Content": 20,
+        "Potassium_content": 0,
+        "__v": 0
+    }
 }
 ```
 **Errors:**
@@ -105,9 +122,20 @@ Predicts the crop type based on weather and soil parameters.
 
 ```json
 {
-    "prediction": [
-        3
-    ]
+    "prediction": 3,
+    "croprDetails": {
+        "_id": "66e13f3551591db321058006",
+        "cropID": 3,
+        "name": "jute",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/4/4d/Jute_field.jpg",
+        "optimal_ph_min": 5,
+        "optimal_ph_max": 7.5,
+        "optimal_temp_min": 24,
+        "optimal_temp_max": 37,
+        "optimal_moisture_min": 70,
+        "optimal_moisture_max": 90,
+        "__v": 0
+    }
 }
 ```
 **Errors:**

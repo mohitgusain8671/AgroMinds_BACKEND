@@ -20,6 +20,8 @@ app.get('/', (req,res)=>{
 
 require("./routes/predicterRoutes")(app)
 require("./routes/authRoutes")(app)
+require("./routes/cropRoutes")(app)
+require("./routes/fertilizerRoutes")(app)
 app.listen(port,()=>{
     console.log(`Server is running on port ${port}`);
 });

@@ -6,7 +6,7 @@ const userModel = require("../models/userModel")
 
 exports.signup = async (req,res) => {
     try {
-        const { _id, Name, Email, password, otp } = req.body;
+        const {Name, Email, password, otp } = req.body;
     
         // Check if user already exists
         const existingUser = await userModel.findOne({ Email });
@@ -33,7 +33,6 @@ exports.signup = async (req,res) => {
     
         // Create new user with role set to 'farmer'
         const newUser = new userModel({
-          _id,
           Name,
           Email,
           password: hashedPassword,

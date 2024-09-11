@@ -84,7 +84,8 @@ exports.fertilizerPrediction = async (req, res) => {
         // Return the fertilizer details along with the prediction result
         res.json({
             prediction: predictionId,
-            fertilizerDetails: fertilizer
+            fertilizerDetails: fertilizer,
+            input: inputData
         });
     } catch (error) {
         console.error(error);
@@ -125,7 +126,8 @@ exports.cropPrediction = async (req, res) => {
         // Return the Crop details along with the prediction result
         res.json({
             prediction: predictionId,
-            croprDetails: crop
+            croprDetails: crop,
+            input: inputData
         });
     } catch (error) {
         console.error(error);
@@ -152,7 +154,18 @@ exports.calculateFertilizer = async (req,res)=>{
         const FertilizerQuantity = ((def_N2 / fert_N2) + (def_P / fert_P) + (def_K / fert_K)).toFixed(3);
         // If you need the result as a number:
         const FertilizerQuantityNumber = parseFloat(FertilizerQuantity);
-        res.status(200).json({FertilizerAmount : `${FertilizerQuantityNumber} kg/ha` })
+        res.json({
+            FertilizerAmount : `${FertilizerQuantityNumber} kg/ha`,
+            FertilizerDetail : fertilizer,
+            CropDetail : crop,
+            input : {
+                Soil_N2 : N2,
+                Soil_P : P,
+                Soil_K : k,
+                CropName : CropName,
+                FertilizerName : FertilizerName
+            }
+         })
     }catch(err){
         console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });

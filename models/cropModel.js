@@ -11,8 +11,11 @@ const cropSchema = new Schema({
     optimal_temp_min: { type: Number, required: true },
     optimal_temp_max: { type: Number, required: true },
     optimal_moisture_min: { type: Number, required: true },
-    optimal_moisture_max: { type: Number, required: true }
-});
+    optimal_moisture_max: { type: Number, required: true },
+    N: { type: Number, required: true},
+    P: { type: Number, required: true},
+    K: { type: Number, required: true},
+},{timestamps:true,versionKey:false});
   
 const Crop = mongoose.model('Crop',cropSchema);
 

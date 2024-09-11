@@ -1,8 +1,8 @@
 const axios = require('axios');
 const Fertilizer = require("../models/fertilizerModel")
-const Crop = require("../models/cropModel")
+const Crop = require("../models/cropModel") 
 // Replace these URLs with the actual URLs of your FastAPI microservice
-const FASTAPI_BASE_URL = 'http://localhost:8000';  // Adjust this to the correct address if necessary
+const FASTAPI_BASE_URL = 'https://pymicroserviceforsih.onrender.com';  // Adjust this to the correct address if necessary
 const OPEN_METEO_URL = 'https://archive-api.open-meteo.com/v1/archive';
 
 
@@ -132,3 +132,27 @@ exports.cropPrediction = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
+exports.calculateFertilizer = async (req,res)=>{
+    try{
+        const {N2, P, k, CropID, FertilizerID} = req.body;
+        const crop = await Crop.findOne({cropID: CropID});
+        const fertilizer = await Fertilizer.findOne({fertilizerID: FertilizerID});
+        var def_N2 = crop.N - N2
+        var def_P = crop.P - P
+        var def_K = crop.K - k
+        if(def_N2<0) def_N2 = 0;
+        if(def_P<0) def_P = 0;
+        if(def_K<0) def_K = 0;
+        const fert_N2 = fertilizer.N2_content!=0?fertilizer.N2_content:1
+        const fert_P = fertilizer.Phosphorus_Content!=0?fertilizer.Phosphorus_Content:1
+        const fert_K = fertilizer.Potassium_content!=0?fertilizer.Potassium_content:1
+        const FertilizerQuantity = ((def_N2 / fert_N2) + (def_P / fert_P) + (def_K / fert_K)).toFixed(3);
+        // If you need the result as a number:
+        const FertilizerQuantityNumber = parseFloat(FertilizerQuantity);
+        res.status(200).json({FertilizerAmount : `${FertilizerQuantityNumber} kg/ha` })
+    }catch(err){
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}

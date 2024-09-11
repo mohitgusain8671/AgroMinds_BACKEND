@@ -21,7 +21,7 @@ const fertilizerRecommendationSchema = new Schema({
     },
     fertilizerID: { type: Number, ref: 'Fertilizers', required: true },
     Quantity: { type: Number, required: true }
-});
+},{timestamps:true,versionKey:false});
 
 const FertilizerPrediction = mongoose.model('FertilizerPrediction',fertilizerRecommendationSchema);
 

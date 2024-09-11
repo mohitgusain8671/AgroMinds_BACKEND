@@ -4,4 +4,6 @@ module.exports = (app)=>{
 
     app.get('/agroTech/api/v1/crop-predict',predictController.cropPrediction);
 
+    app.get('/agroTech/api/v1/calculateFertilizer',predictController.calculateFertilizer);
+
 } 

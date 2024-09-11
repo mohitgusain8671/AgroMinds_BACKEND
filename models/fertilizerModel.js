@@ -10,7 +10,7 @@ const fertilizersSchema = new Schema({
     N2_content: { type: Number, required: true },
     Phosphorus_Content: { type: Number, required: true },
     Potassium_content: { type: Number, required: true }
-});
+},{timestamps:true,versionKey:false});
 
 const Fertilizers = mongoose.model('Fertilizers',fertilizersSchema);
 

@@ -20,7 +20,7 @@ const cropPredictionSchema = new Schema({
       }
     },
     predictedcropID: { type: Number, ref: 'Crop', required: true }
-});
+},{timestamps:true,versionKey:false});
 
 const CropPrediction = mongoose.model('CropPrediction',cropPredictionSchema);
 

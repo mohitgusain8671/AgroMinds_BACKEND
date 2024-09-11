@@ -135,9 +135,11 @@ exports.cropPrediction = async (req, res) => {
 
 exports.calculateFertilizer = async (req,res)=>{
     try{
-        const {N2, P, k, CropID, FertilizerID} = req.body;
-        const crop = await Crop.findOne({cropID: CropID});
-        const fertilizer = await Fertilizer.findOne({fertilizerID: FertilizerID});
+        const {N2, P, k, CropName, FertilizerName} = req.body;
+        const cropNameLowerCase = CropName.toLowerCase();
+        const crop = await Crop.findOne({name: cropNameLowerCase});
+        const fertilizer = await Fertilizer.findOne({name: FertilizerName});
+        console.log(fertilizer)
         var def_N2 = crop.N - N2
         var def_P = crop.P - P
         var def_K = crop.K - k

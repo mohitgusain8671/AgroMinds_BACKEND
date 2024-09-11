@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const sendOtpEmail = require("../helper/sendMail")
+const helper = require("../helper/sendMail")
 const userModel = require("../models/userModel")
 
 exports.signup = async (req,res) => {
@@ -41,7 +41,7 @@ exports.signup = async (req,res) => {
           Code: generatedOtp          // Store generated OTP in the database
         });
         // Send OTP to user's email (via Nodemailer)
-        await sendOtpEmail(Email, generatedOtp);
+        await helper.sendOtpEmail(Email, generatedOtp);
         // Save the new user in the database
         await newUser.save();
         // Send success response
@@ -51,4 +51,55 @@ exports.signup = async (req,res) => {
         res.status(500).json({ message: 'Server error during signup process.' });
     }
 
+}
+
+exports.signIn = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    // Find user by email
+    const user = await userModel.findOne({ Email: email });
+
+    if (!user) {
+      return res.status(400).json({ message: 'User not found' });
+    }
+
+    // Check if user is verified
+    if (!user.IsVerified) {
+      return res.status(403).json({ message: 'User is not verified' });
+    }
+
+    // Check if password matches
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
+
+    // Create JWT token
+    const tokenPayload = {
+      id: user._id,
+      Name: user.Name,
+      Email: user.Email,
+      Role: user.Role
+    };
+
+    const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    // Set cookie with JWT token
+    res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict' });
+
+    // Send response
+    res.json({
+        message: 'Signed in successfully',
+        user: {
+          Name: user.Name,
+          Email: user.Email,
+          Role: user.Role
+        }
+    });
+
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
+  }
 }

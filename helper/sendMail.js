@@ -2,7 +2,7 @@ const nodeMailer = require("nodemailer");
 require('dotenv').config();
 exports.sendOtpEmail = async (email, otp) => {
     // Configure Nodemailer transporter (adjust with your email service and credentials)
-    const transporter = nodemailer.createTransport({
+    const transporter = nodeMailer.createTransport({
       service: 'gmail',
       auth: {
         user: process.env.Email, // Replace with your email

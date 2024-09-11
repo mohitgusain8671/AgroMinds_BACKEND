@@ -91,6 +91,7 @@ exports.signIn = async (req, res) => {
     // Send response
     res.json({
         message: 'Signed in successfully',
+        token: token,
         user: {
           Name: user.Name,
           Email: user.Email,

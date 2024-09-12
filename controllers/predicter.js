@@ -55,18 +55,20 @@ exports.fertilizerPrediction = async (req, res) => {
         const long = req.body.longitude;
         console.log(lat,long)
         const weatherData = await fetchWeatherData(lat,long);
+        console.log("Line 58",req.body);
 
         const inputData = {
-            "Moisture": req.body.Moisture,
-            "Soil_Type": req.body.Soil_Type,
-            "Crop_Type": req.body.Crop_Type,
-            "Nitrogen": req.body.Nitrogen,
-            "Potassium": req.body.Potassium,
-            "Phosphorous": req.body.Phosphorous,
-            "Temperature": weatherData.temperature,
-            "Humidity": weatherData.humidity
-        };
-
+            latitude: req.body.latitude, // Single value
+            longitude: req.body.longitude, // Single value
+            Moisture: [req.body.moisture], // Array
+            Soil_Type: [req.body.soilType], // Array
+            Crop_Type: [req.body.cropType], // Array
+            Nitrogen: [req.body.nitrogenContent], // Array
+            Potassium: [req.body.potassium], // Array
+            Phosphorous: [req.body.phosphorus], // Array
+            Temperature: weatherData.temperature, // Single value (if available)
+            Humidity: weatherData.humidity // Single value (if available)
+          };
         // Call FastAPI's /predict-fertilizer endpoint
         const response = await axios.post(`${FASTAPI_BASE_URL}/predict-fertilizer`, inputData, {
             headers: { 'Content-Type': 'application/json' }
@@ -95,25 +97,26 @@ exports.fertilizerPrediction = async (req, res) => {
 
 exports.cropPrediction = async (req, res) => {
     try {
-        // Fetch weather data for the location
+        console.log("Line 98",req.body);
         const lat = req.body.latitude;
         const long = req.body.longitude;
         console.log(lat,long)
         const weatherData = await fetchWeatherData(lat,long);
-
+        
         const inputData = {
-            "N": req.body.N,
-            "P": req.body.P,
-            "K": req.body.K,
+            "N": [req.body.nitrogenContent],  // Convert to an array
+            "P": [req.body.phosphorus],       // Convert to an array
+            "K": [req.body.potassium],        // Convert to an array
             "Temperature": weatherData.temperature,
             "Humidity": weatherData.humidity,
-            "PH": req.body.PH,
+            "PH": [req.body.phLevel],         // Convert to an array
             "Rainfall": weatherData.rainfall
         };
         // Call FastAPI's /predict-crop endpoint
         const response = await axios.post(`${FASTAPI_BASE_URL}/predict-crop`, inputData, {
             headers: { 'Content-Type': 'application/json' }
         });
+        console.log("117",response)
         const predictionId = response.data.predictions[0]; // Extract prediction ID (e.g., 3)
 
         // Search for the Crop in the database by the CropID attribute
@@ -124,10 +127,10 @@ exports.cropPrediction = async (req, res) => {
         }
 
         // Return the Crop details along with the prediction result
-        res.json({
+        return res.status(200).json({
             prediction: predictionId,
-            croprDetails: crop,
-            input: inputData
+            cropDetails: crop,
+            // input: inputData
         });
     } catch (error) {
         console.error(error);

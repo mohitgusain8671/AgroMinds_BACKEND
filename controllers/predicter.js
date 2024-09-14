@@ -28,7 +28,6 @@ const fetchWeatherData = async (LATITUDE,LONGITUDE) => {
             },
             headers: { 'Content-Type': 'application/json' }
         });
-        console.log(weatherResponse)
         const weatherData = weatherResponse.data;
         const avgTemperature = calculateAverage(weatherData.hourly.temperature_2m);
         const avgHumidity = calculateAverage(weatherData.hourly.relative_humidity_2m);
@@ -55,11 +54,8 @@ exports.fertilizerPrediction = async (req, res) => {
         const long = req.body.longitude;
         console.log(lat,long)
         const weatherData = await fetchWeatherData(lat,long);
-        console.log("Line 58",req.body);
 
         const inputData = {
-            latitude: req.body.latitude, // Single value
-            longitude: req.body.longitude, // Single value
             Moisture: [req.body.moisture], // Array
             Soil_Type: [req.body.soilType], // Array
             Crop_Type: [req.body.cropType], // Array
@@ -69,6 +65,8 @@ exports.fertilizerPrediction = async (req, res) => {
             Temperature: weatherData.temperature, // Single value (if available)
             Humidity: weatherData.humidity // Single value (if available)
           };
+
+        console.log("input: ",inputData)
         // Call FastAPI's /predict-fertilizer endpoint
         const response = await axios.post(`${FASTAPI_BASE_URL}/predict-fertilizer`, inputData, {
             headers: { 'Content-Type': 'application/json' }
@@ -87,7 +85,7 @@ exports.fertilizerPrediction = async (req, res) => {
         res.json({
             prediction: predictionId,
             fertilizerDetails: fertilizer,
-            input: inputData
+            // input: inputData
         });
     } catch (error) {
         console.error(error);
@@ -161,13 +159,6 @@ exports.calculateFertilizer = async (req,res)=>{
             FertilizerAmount : `${FertilizerQuantityNumber} kg/ha`,
             FertilizerDetail : fertilizer,
             CropDetail : crop,
-            input : {
-                Soil_N2 : N2,
-                Soil_P : P,
-                Soil_K : k,
-                CropName : CropName,
-                FertilizerName : FertilizerName
-            }
          })
     }catch(err){
         console.error(err);

@@ -29,3 +29,30 @@ exports.getAllCrops = async (req,res) => {
         res.status(500).json({message: 'Failed to fetch crops'})
     }
 }
+exports.updateCrop = async (req,res) =>{
+    try {
+        const cropID = req.params.cropId; // Use cropId instead of _id
+        const cropUpdates = req.body; // Updates provided in request body
+    
+        if (!Object.keys(cropUpdates).length) {
+          return res.status(400).json({ message: "No crop details provided" });
+        }
+    
+        // Find crop by cropId and update only the provided fields
+        const updatedCrop = await Crop.findOneAndUpdate(
+          { cropID: cropID }, // Find by cropId
+          { $set: cropUpdates }, // Update only provided fields
+          { new: true } // Return the updated document
+        );
+    
+        if (!updatedCrop) {
+          return res.status(404).json({ message: "Crop not found" });
+        }
+    
+        res.status(200).json({ message: "Crop updated successfully", updatedCrop });
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Failed to update crop" });
+      }
+        
+}
